@@ -4,7 +4,15 @@ RAG integration tool for querying the local YogaBharati RAG system.
 import logging
 from typing import Optional
 
+from .video_indexer import VideoIndexer
+
 logger = logging.getLogger(__name__)
+
+# Initialize VideoIndexer with the path to the videos folder
+video_indexer = VideoIndexer("videos")
+
+# Get video information
+videos_info = video_indexer.get_videos_info()
 
 
 # Stub implementations for RAG system components

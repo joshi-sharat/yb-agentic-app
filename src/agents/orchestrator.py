@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class YogaBharatiOrchestrator:
-    """Orchestrator agent for yoga class recommendations with YouTube video suggestions."""
+    """Orchestrator agent for yoga class creation with appropriate video embeddings from local library for practices in the class generated."""
 
     def __init__(self):
         """Initialize the orchestrator agent."""
@@ -36,7 +36,7 @@ class YogaBharatiOrchestrator:
         """Create and configure the agent with tools."""
         agent = Agent(
             name="YogaBharati Orchestrator",
-            instructions="""You are an expert yoga instructor assistant for YogaBharati.org. 
+            instructions="""You are an expert yoga expert and instructor of YogaBharati. Use your expertise in Yoga to generate appropriate Yoga Class. 
 Your role is to:
 1. Understand the user's yoga practice needs and preferences
 2. Search the YogaBharati YouTube channel for relevant video snippets
@@ -46,7 +46,7 @@ Your role is to:
 When a user asks about yoga classes:
 - First, understand their experience level and goals
 - Query the RAG system to get detailed class information
-- Search YouTube for relevant YogaBharati videos
+- Search local video library i.e videos folder for relevant YogaBharati videos
 - Combine both results to provide comprehensive recommendations
 - Format results with video links and class details clearly
 
@@ -57,36 +57,18 @@ Always cite the video sources and class materials you recommend.""",
                 {
                     "type": "function",
                     "function": {
-                        "name": "search_yogabharati_videos",
-                        "description": "Search YogaBharati YouTube channel for videos matching a query",
-                        "parameters": {
-                            "type": "object",
-                            "properties": {
-                                "query": {
-                                    "type": "string",
-                                    "description": "Search query for yoga videos (e.g., 'beginner yoga', 'meditation class')",
-                                },
-                                "max_results": {
-                                    "type": "integer",
-                                    "description": "Maximum number of videos to return (default: 10)",
-                                    "default": 10,
-                                },
-                            },
-                            "required": ["query"],
-                        },
-                    },
-                },
-                {
-                    "type": "function",
-                    "function": {
                         "name": "query_rag_system",
-                        "description": "Query the local RAG system for detailed yoga class information",
+                        "description": "Query the RAG system for detailed yoga class generation based on user input",
                         "parameters": {
                             "type": "object",
                             "properties": {
                                 "query_text": {
                                     "type": "string",
-                                    "description": "Query about yoga classes or techniques",
+                                    "description": "give a standard YogaBharati Yoga class"
+                                        " Make sure that it is max 75 minutes "
+                                        "Has an Opening Prayer and Ending Relaxation practices "
+                                        "Name each practice, the duration of it and the timeline "
+                                        "Be short and Crisp, DONT Repeat",
                                 },
                                 "top_k": {
                                     "type": "integer",
@@ -95,6 +77,28 @@ Always cite the video sources and class materials you recommend.""",
                                 },
                             },
                             "required": ["query_text"],
+                        },
+                    },
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "search_yogabharati_videos",
+                        "description": "Search YogaBharati local library for videos matching a query",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "query": {
+                                    "type": "string",
+                                    "description": "Search query for yoga videos (e.g., 'Bhujangasana', 'SuryaNamaskar')",
+                                },
+                                "max_results": {
+                                    "type": "integer",
+                                    "description": "Maximum number of videos to return (default: 10)",
+                                    "default": 10,
+                                },
+                            },
+                            "required": ["query"],
                         },
                     },
                 },
