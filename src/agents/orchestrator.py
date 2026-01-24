@@ -5,6 +5,7 @@ Orchestrates uses input, searches YouTube, and integrates with local RAG system.
 import json
 import logging
 from typing import Any, Optional
+
 from agent_framework_azure_ai import AzureAIAgentClient
 from agent_framework_azure_ai._chat_client import Agent, ChatMessage, MessageRole
 from openai import AzureOpenAI
@@ -24,19 +25,41 @@ class YogaBharatiOrchestrator:
 
     def __init__(self):
         """Initialize the orchestrator agent."""
+        # Validate settings before initializing
+        self._validate_settings()
+        
         self.client = AzureOpenAI(
-            api_key=settings.GITHUB_TOKEN,
-            api_version="2024-10-21",
+            api_key=settings.AZURE_OPENAI_API_KEY,
+            api_version=settings.API_VERSION,
             azure_endpoint=settings.API_ENDPOINT,
         )
         self.agent = self._create_agent()
         self.conversation_history: list[ChatMessage] = []
+        
+        logger.info("YogaBharatiOrchestrator initialized successfully")
+
+    def _validate_settings(self) -> None:
+        """Validate required settings are configured."""
+        if not settings.AZURE_OPENAI_API_KEY:
+            raise ValueError(
+                "Azure OpenAI API key not configured. "
+                "Set the AZURE_OPENAI_API_KEY environment variable."
+            )
+        
+        if not settings.API_ENDPOINT:
+            raise ValueError(
+                "API endpoint not configured. "
+                "Set the API_ENDPOINT environment variable."
+            )
+        
+        logger.debug("Settings validated successfully")
 
     def _create_agent(self) -> Agent:
         """Create and configure the agent with tools."""
         agent = Agent(
             name="YogaBharati Orchestrator",
-            instructions="""You are an expert yoga expert and instructor of YogaBharati. Use your expertise in Yoga to generate appropriate Yoga Class. 
+            instructions="""You are an expert yoga expert and instructor of YogaBharati. Use your expertise in Yoga to generate appropriate Yoga classes.
+
 Your role is to:
 1. Understand the user's yoga practice needs and preferences
 2. Search the YogaBharati YouTube channel for relevant video snippets
@@ -65,10 +88,10 @@ Always cite the video sources and class materials you recommend.""",
                                 "query_text": {
                                     "type": "string",
                                     "description": "give a standard YogaBharati Yoga class"
-                                        " Make sure that it is max 75 minutes "
-                                        "Has an Opening Prayer and Ending Relaxation practices "
-                                        "Name each practice, the duration of it and the timeline "
-                                        "Be short and Crisp, DONT Repeat",
+                                    " Make sure that it is max 75 minutes "
+                                    "Has an Opening Prayer and Ending Relaxation practices "
+                                    "Name each practice, the duration of it and the timeline "
+                                    "Be short and Crisp, DONT Repeat",
                                 },
                                 "top_k": {
                                     "type": "integer",
@@ -126,7 +149,7 @@ Always cite the video sources and class materials you recommend.""",
     def _execute_tool(self, tool_name: str, tool_args: dict) -> Any:
         """Execute a tool and return results."""
         logger.info(f"Executing tool: {tool_name} with args: {tool_args}")
-
+        
         try:
             if tool_name == "search_yogabharati_videos":
                 return search_yogabharati_videos(
@@ -170,7 +193,7 @@ Always cite the video sources and class materials you recommend.""",
         messages = self.conversation_history.copy()
 
         # Keep making requests until we get a final response (no more tool calls)
-        max_iterations = 5
+        max_iterations = settings.MAX_ITERATIONS
         iteration = 0
 
         while iteration < max_iterations:
@@ -271,7 +294,7 @@ Always cite the video sources and class materials you recommend.""",
             for msg in self.conversation_history
         ]
 
-    def reset_conversation(self):
+    def reset_conversation(self) -> None:
         """Reset the conversation history."""
         self.conversation_history = []
         logger.info("Conversation history reset")

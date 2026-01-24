@@ -1,10 +1,22 @@
+# Azure AI and OpenAI
 agent-framework-azure-ai>=1.0.0b260107
 openai>=1.50.0
+
+# Configuration
 python-dotenv>=1.0.0
 pydantic>=2.0.0
-httpx>=0.27.0
-#youtube-search-python>=1.9.4
-opensearch-py>=2.3.1
-requests>=2.31.0
 pydantic-settings>=2.0.0
+
+# HTTP Client
+httpx>=0.27.0
+requests>=2.31.0
+
+# OpenSearch for RAG
+opensearch-py>=2.3.1
+
+# YouTube (optional - comment out if not needed)
+# youtube-search-python>=1.9.4
 youtube-search>=2.2.0
+
+# Logging and utilities
+typing-extensions>=4.0.0

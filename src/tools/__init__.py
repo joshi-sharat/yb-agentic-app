@@ -1,12 +1,20 @@
 """
-Initialize tools for the agent.
+Initialize tools for the YogaBharati agent.
 """
-from .youtube_tool import search_yogabharati_videos, get_channel_videos
-from .rag_tool import query_rag_system, search_yoga_class_details
+from .rag_tool import (
+    query_rag_system,
+    search_yoga_class_details,
+    search_yogabharati_videos,
+    generate_embeddings,
+    hybrid_search,
+)
+from .video_indexer import VideoIndexer
 
 __all__ = [
     "search_yogabharati_videos",
-    "get_channel_videos",
     "query_rag_system",
     "search_yoga_class_details",
+    "generate_embeddings",
+    "hybrid_search",
+    "VideoIndexer",
 ]

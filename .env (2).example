@@ -1,0 +1,44 @@
+# YogaBharati Agentic App Configuration
+# Copy this file to .env and fill in your values
+
+# ===========================================
+# Azure OpenAI Configuration (Required)
+# ===========================================
+AZURE_OPENAI_API_KEY=your_azure_openai_api_key_here
+API_ENDPOINT=https://models.inference.ai.azure.com
+API_VERSION=2024-10-21
+MODEL_ID=gpt-4.1-mini
+EMBEDDING_MODEL_ID=text-embedding-ada-002
+
+# ===========================================
+# OpenSearch Configuration (Required for RAG)
+# ===========================================
+OPENSEARCH_HOST=localhost
+OPENSEARCH_PORT=9200
+OPENSEARCH_INDEX=documents
+OPENSEARCH_USER=
+OPENSEARCH_PASSWORD=
+
+# ===========================================
+# Video Library Configuration
+# ===========================================
+VIDEOS_PATH=videos
+
+# ===========================================
+# YouTube Configuration (Optional)
+# ===========================================
+YOUTUBE_CHANNEL_ID=UCJXeL1kUCNKPiJvZaFnz6Kg
+MAX_YOUTUBE_RESULTS=10
+
+# ===========================================
+# Application Settings
+# ===========================================
+DEBUG=False
+LOG_LEVEL=INFO
+LOG_FILE=logs/agent.log
+
+# ===========================================
+# Agent Configuration
+# ===========================================
+MAX_ITERATIONS=5
+AGENT_TIMEOUT=60
