@@ -12,12 +12,17 @@ This orchestrator:
 NO LLM here - the RAG service handles all AI/ML processing.
 """
 
-import logging
 import os
 import re
 import sys
 from pathlib import Path
 from typing import Any, Optional, List, Dict
+from src.utils import setup_logging
+
+# Initialize logger
+setup_logging()
+logger = logging.getLogger(__name__)
+
 
 # Fix import paths
 _current_file = Path(__file__).resolve()
@@ -49,8 +54,6 @@ except ImportError:
             query_rag_system,
             search_yoga_class_details,
         )
-
-logger = logging.getLogger(__name__)
 
 # Path to videos folder
 VIDEOS_FOLDER = _project_root / "videos"

@@ -9,12 +9,18 @@ Services:
 - RAG UI/Alternative: http://localhost:8501
 """
 
-import logging
 import os
 import sys
 import requests
 from pathlib import Path
 from typing import Optional, List, Dict, Any
+
+from src.utils import setup_logging
+
+# Initialize logger
+setup_logging()
+logger = logging.getLogger(__name__)
+
 
 # Fix import paths
 _current_file = Path(__file__).resolve()
@@ -36,8 +42,6 @@ except ImportError:
         from video_indexer import VideoIndexer
     except ImportError:
         VideoIndexer = None
-
-logger = logging.getLogger(__name__)
 
 
 def _get_setting(name: str, default: Any = None) -> Any:
