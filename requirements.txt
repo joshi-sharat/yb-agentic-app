@@ -1,4 +1,14 @@
-# Azure AI and OpenAI
+# Anthropic (Claude) - Primary LLM
+anthropic>=0.40.0
+
+# Embeddings (local, no API key needed)
+sentence-transformers>=2.2.0
+torch>=2.0.0
+
+# Optional: Voyage AI for embeddings (Anthropic's recommended partner)
+# voyageai>=0.2.0
+
+# Azure AI and OpenAI (kept for backwards compatibility)
 agent-framework-azure-ai>=1.0.0b260107
 openai>=1.50.0
 
@@ -20,3 +30,6 @@ youtube-search>=2.2.0
 
 # Logging and utilities
 typing-extensions>=4.0.0
+
+# Additional utilities
+numpy>=1.24.0
