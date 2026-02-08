@@ -15,6 +15,7 @@ NO LLM here - the RAG service handles all AI/ML processing.
 import os
 import re
 import sys
+import logging
 from pathlib import Path
 from typing import Any, Optional, List, Dict
 from src.utils import setup_logging

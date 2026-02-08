@@ -11,35 +11,20 @@ class Settings(BaseSettings):
     """Application settings from environment variables."""
     
     # RAG Service URLs
-    RAG_SERVICE_URL = "http://localhost:8080"
-    RAG_UI_URL = "http://localhost:8501"
+    RAG_SERVICE_URL: str = "http://localhost:8080"
+    RAG_UI_URL: str = "http://localhost:8501"
     
-
-    # Anthropic (Claude) Configuration
-    ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
-    CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-20250514")
-    CLAUDE_MAX_TOKENS: int = int(os.getenv("CLAUDE_MAX_TOKENS", "4096"))
-    
-    # Legacy Azure OpenAI Configuration (kept for backwards compatibility)
-    AZURE_OPENAI_API_KEY: str = os.getenv("AZURE_OPENAI_API_KEY", "")
-    MODEL_ID: str = os.getenv("MODEL_ID", "gpt-4.1-mini")
-    EMBEDDING_MODEL_ID: str = os.getenv("EMBEDDING_MODEL_ID", "text-embedding-ada-002")
-    API_ENDPOINT: str = os.getenv("API_ENDPOINT", "https://models.inference.ai.azure.com")
-    API_VERSION: str = os.getenv("API_VERSION", "2024-02-15-preview")
-    AZURE_OPENAI_DEPLOYMENT: str = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-4.1-mini-deployment")
+    # Logging
+    LOG_FILE_PATH: str = "logs/app.log"  # File path for the application log file
 
     # For Ollama 
     OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "gemma3")
-    OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", "http://192.168.4.112:11434")
+    OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", "http://192.168.4.115:11434")
     
     # Embedding Configuration
     # Using local sentence-transformers model (no API key needed)
     EMBEDDING_MODEL_NAME: str = os.getenv("EMBEDDING_MODEL_NAME", "all-MiniLM-L6-v2")
     EMBEDDING_DIMENSION: int = int(os.getenv("EMBEDDING_DIMENSION", "768"))
-    
-    # Optional: Voyage AI for embeddings (Anthropic's recommended partner)
-    VOYAGE_API_KEY: str = os.getenv("VOYAGE_API_KEY", "")
-    VOYAGE_MODEL: str = os.getenv("VOYAGE_MODEL", "voyage-2")
     
     # OpenSearch Configuration
     OPENSEARCH_HOST: str = os.getenv("OPENSEARCH_HOST", "localhost")
@@ -68,21 +53,21 @@ class Settings(BaseSettings):
     AGENT_TIMEOUT: int = int(os.getenv("AGENT_TIMEOUT", "60"))
     
     # LLM Provider Selection
-    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "anthropic")  # Options: "anthropic", "azure", "openai"
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "ollama")  # Options: "anthropic", "azure", "openai"
     
     def validate(self) -> None:
         """Validate required settings are configured."""
         errors = []
         
         # Check based on selected LLM provider
-        if self.LLM_PROVIDER == "anthropic":
-            if not self.ANTHROPIC_API_KEY:
-                errors.append("ANTHROPIC_API_KEY is required when using Anthropic")
-        elif self.LLM_PROVIDER in ["azure", "openai"]:
-            if not self.AZURE_OPENAI_API_KEY:
-                errors.append("AZURE_OPENAI_API_KEY is required when using Azure/OpenAI")
-            if not self.API_ENDPOINT:
-                errors.append("API_ENDPOINT is required")
+        # if self.LLM_PROVIDER == "anthropic":
+        #     if not self.ANTHROPIC_API_KEY:
+        #         errors.append("ANTHROPIC_API_KEY is required when using Anthropic")
+        # elif self.LLM_PROVIDER in ["azure", "openai"]:
+        #     if not self.AZURE_OPENAI_API_KEY:
+        #         errors.append("AZURE_OPENAI_API_KEY is required when using Azure/OpenAI")
+        #     if not self.API_ENDPOINT:
+        #         errors.append("API_ENDPOINT is required")
         
         if errors:
             raise ValueError(f"Configuration errors: {', '.join(errors)}")
@@ -93,14 +78,10 @@ class Settings(BaseSettings):
         return bool(self.OPENSEARCH_HOST and self.OPENSEARCH_PORT)
     
     @property
-    def is_anthropic_configured(self) -> bool:
+    def is_ollama_configured(self) -> bool:
         """Check if Anthropic API is configured."""
-        return bool(self.ANTHROPIC_API_KEY)
-    
-    @property
-    def is_voyage_configured(self) -> bool:
-        """Check if Voyage AI is configured for embeddings."""
-        return bool(self.VOYAGE_API_KEY)
+        return bool(self.OLLAMA_HOST and self.OLLAMA_MODEL)
+
 
     class Config:
         env_file = ".env"

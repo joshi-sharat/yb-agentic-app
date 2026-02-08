@@ -4,8 +4,7 @@ import logging
 import re
 from typing import List
 
-from config import LOG_FILE_PATH
-
+LOG_FILE_PATH = "logs/app.log"
 
 def setup_logging() -> None:
     """

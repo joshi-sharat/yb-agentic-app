@@ -12,8 +12,11 @@ Services:
 import os
 import sys
 import requests
+import logging
 from pathlib import Path
 from typing import Optional, List, Dict, Any
+
+from sympy import true
 
 from src.utils import setup_logging
 
@@ -54,7 +57,7 @@ def _get_setting(name: str, default: Any = None) -> Any:
 # RAG Service Configuration
 RAG_SERVICE_URL = _get_setting('RAG_SERVICE_URL', 'http://localhost:8080')
 RAG_UI_URL = _get_setting('RAG_UI_URL', 'http://localhost:8501')
-REQUEST_TIMEOUT = int(_get_setting('RAG_REQUEST_TIMEOUT', 60))
+REQUEST_TIMEOUT = int(_get_setting('RAG_REQUEST_TIMEOUT', 240))
 
 # Lazy initialization for video indexer
 _video_indexer: Optional[Any] = None
@@ -120,13 +123,13 @@ def query_rag_system(query_text: str, top_k: int = 5) -> Dict[str, Any]:
     
     # Try different endpoint patterns that RAG services commonly use
     endpoints_to_try = [
-        (f"{RAG_SERVICE_URL}/query", "POST", {"query": query_text, "top_k": top_k}),
-        (f"{RAG_SERVICE_URL}/ask", "POST", {"question": query_text, "k": top_k}),
-        (f"{RAG_SERVICE_URL}/chat", "POST", {"message": query_text}),
-        (f"{RAG_SERVICE_URL}/generate", "POST", {"prompt": query_text, "top_k": top_k}),
-        (f"{RAG_SERVICE_URL}/api/query", "POST", {"query": query_text}),
-        (f"{RAG_SERVICE_URL}/api/chat", "POST", {"query": query_text}),
-        (f"{RAG_SERVICE_URL}/v1/query", "POST", {"query": query_text}),
+        (f"{RAG_SERVICE_URL}/query", "POST", {"query": query_text, "top_k": top_k, "temperature": 0.1}),
+        # (f"{RAG_SERVICE_URL}/ask", "POST", {"question": query_text, "k": top_k}),
+        # (f"{RAG_SERVICE_URL}/chat", "POST", {"message": query_text}),
+        # (f"{RAG_SERVICE_URL}/generate", "POST", {"prompt": query_text, "top_k": top_k}),
+        # (f"{RAG_SERVICE_URL}/api/query", "POST", {"query": query_text}),
+        # (f"{RAG_SERVICE_URL}/api/chat", "POST", {"query": query_text}),
+        # (f"{RAG_SERVICE_URL}/v1/query", "POST", {"query": query_text}),
     ]
     
     last_error = None
@@ -148,7 +151,7 @@ def query_rag_system(query_text: str, top_k: int = 5) -> Dict[str, Any]:
                     params=payload,
                     timeout=REQUEST_TIMEOUT
                 )
-            
+
             if response.status_code == 200:
                 data = response.json()
                 logger.info(f"RAG service responded successfully from {endpoint}")
